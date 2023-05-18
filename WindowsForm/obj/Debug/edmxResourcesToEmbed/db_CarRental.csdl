@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CarRentalModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="rentalRecords">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="customerName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="dateRented" Type="DateTime" Precision="3" />
+    <Property Name="dateReturned" Type="DateTime" Precision="3" />
+    <Property Name="cost" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="typeCarID" Type="Int32" />
+    <NavigationProperty Name="typeCars" Relationship="Self.FK__rentalRec__typeC__4BAC3F29" FromRole="rentalRecords" ToRole="typeCars" />
+  </EntityType>
+  <EntityType Name="typeCars">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="model" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="year" Type="Int32" />
+    <Property Name="licensePlate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="rentalRecords" Relationship="Self.FK__rentalRec__typeC__4BAC3F29" FromRole="typeCars" ToRole="rentalRecords" />
+  </EntityType>
+  <Association Name="FK__rentalRec__typeC__4BAC3F29">
+    <End Role="typeCars" Type="Self.typeCars" Multiplicity="0..1" />
+    <End Role="rentalRecords" Type="Self.rentalRecords" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="typeCars">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="rentalRecords">
+        <PropertyRef Name="typeCarID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="dbCarRental" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="rentalRecords" EntityType="Self.rentalRecords" />
+    <EntitySet Name="typeCars" EntityType="Self.typeCars" />
+    <AssociationSet Name="FK__rentalRec__typeC__4BAC3F29" Association="Self.FK__rentalRec__typeC__4BAC3F29">
+      <End Role="typeCars" EntitySet="typeCars" />
+      <End Role="rentalRecords" EntitySet="rentalRecords" />
+    </AssociationSet>
+    <EntitySet Name="users" EntityType="CarRentalModel.users" />
+    <EntitySet Name="roles" EntityType="CarRentalModel.roles" />
+    <AssociationSet Name="FK__users__roleID__619B8048" Association="CarRentalModel.FK__users__roleID__619B8048">
+      <End Role="roles" EntitySet="roles" />
+      <End Role="users" EntitySet="users" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="users">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="isActive" Type="Int32" />
+    <Property Name="roleID" Type="Int32" />
+    <NavigationProperty Name="roles" Relationship="CarRentalModel.FK__users__roleID__619B8048" FromRole="users" ToRole="roles" />
+  </EntityType>
+  <EntityType Name="roles">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="users" Relationship="CarRentalModel.FK__users__roleID__619B8048" FromRole="roles" ToRole="users" />
+  </EntityType>
+  <Association Name="FK__users__roleID__619B8048">
+    <End Type="CarRentalModel.roles" Role="roles" Multiplicity="0..1" />
+    <End Type="CarRentalModel.users" Role="users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="roles">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="users">
+        <PropertyRef Name="roleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
